@@ -124,4 +124,4 @@ for download in downloadList:
     if fileUrl is not None:
         print(fileUrl)
 urlretrieve(fileUrl, getDownloadPath(baseUrl, fileUrl, downloadDirectory))
-#下载网页上所以带有src属性的文件
+#下载网页上所以带有src属性的文件 注意建立了分支之后 在gitbash 切换不同分支 文件的显示是不同的 wired
