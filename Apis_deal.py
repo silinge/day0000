@@ -82,46 +82,83 @@
 
 #——————————————————————————
 # part 4
-import os
-from urllib.request import urlretrieve
+# import os
+# # from urllib.request import urlretrieve
+# # from urllib.request import urlopen
+# # from bs4 import BeautifulSoup
+# #
+# # downloadDirectory = "download"
+# # baseUrl = "http://pythonscraping.com"
+# #
+# # def getAbsoluteURL(baseUrl, source):
+# #     if source.startswith("http://www."):
+# #         url = "http://"+source[11:]
+# #     elif source.startswith("http://"):
+# #         url = source
+# #     elif source.startswith("www."):
+# #         url = source[4:]
+# #         url = "http://" + source
+# #     else:
+# #         url = baseUrl+"/"+source
+# #     if baseUrl not in url:
+# #         return None
+# #     return url
+# #
+# # def getDownloadPath(baseUrl, absoluteUrl, downloadDirectory):
+# #     path = absoluteUrl.replace("www.", "")
+# #     path = path.replace(baseUrl, "")
+# #     path = downloadDirectory + path
+# #     directory = os.path.dirname(path)
+# #
+# #     if not os.path.exists(directory):
+# #         os.makedirs(directory)
+# #
+# #     return path
+# #
+# # html = urlopen("http://www.pythonscraping.com")
+# # bsObj = BeautifulSoup(html, features='lxml')
+# # downloadList = bsObj.findAll(src = True)
+# #
+# # for download in downloadList:
+# #     fileUrl = getAbsoluteURL(baseUrl, download["src"])
+# #     if fileUrl is not None:
+# #         print(fileUrl)
+# # urlretrieve(fileUrl, getDownloadPath(baseUrl, fileUrl, downloadDirectory))
+#下载网页上所以带有src属性的文件 注意建立了分支之后 在gitbash 切换不同分支 文件的显示是不同的 wired
+#——————————————————————————
+# part 5
+
+#创建和修改csv文件
+# import csv
+#
+# csvFile = open(r"E:\day0000\gitignorefolder\Newcsv.csv", 'w+')#这里要使用具体的文件名 而不是文件夹路径 不然不知道打开和写入的目标是什么
+# try:
+#     writer = csv.writer(csvFile)
+#     writer.writerow(("i", "i plus 2" , "i*2"))
+#     for i in range(10):
+#         writer.writerow((i, i+2, i*2))
+# finally:
+#     csvFile.close()
+
+#——————————————————————————
+# part 6
+#采集wiki 百科的网页里面的表格存储到csv文件
+import csv
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
-downloadDirectory = "download"
-baseUrl = "http://pythonscraping.com"
-
-def getAbsoluteURL(baseUrl, source):
-    if source.startswith("http://www."):
-        url = "http://"+source[11:]
-    elif source.startswith("http://"):
-        url = source
-    elif source.startswith("www."):
-        url = source[4:]
-        url = "http://" + source
-    else:
-        url = baseUrl+"/"+source
-    if baseUrl not in url:
-        return None
-    return url
-
-def getDownloadPath(baseUrl, absoluteUrl, downloadDirectory):
-    path = absoluteUrl.replace("www.", "")
-    path = path.replace(baseUrl, "")
-    path = downloadDirectory + path
-    directory = os.path.dirname(path)
-
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    return path
-
-html = urlopen("http://www.pythonscraping.com")
+html = urlopen("http://en.wikipedia.org/wiki/Comparison_of_text_editors")
 bsObj = BeautifulSoup(html, features='lxml')
-downloadList = bsObj.findAll(src = True)
+table = bsObj.findAll("table", {"class":"wikitable"})[0]
+rows = table.findAll("tr")
 
-for download in downloadList:
-    fileUrl = getAbsoluteURL(baseUrl, download["src"])
-    if fileUrl is not None:
-        print(fileUrl)
-urlretrieve(fileUrl, getDownloadPath(baseUrl, fileUrl, downloadDirectory))
-#下载网页上所以带有src属性的文件 注意建立了分支之后 在gitbash 切换不同分支 文件的显示是不同的 wired
+csvFile = open(r"E:\day0000\gitignorefolder\editors.csv", "w+", newline='', encoding='utf-8')
+writer = csv.writer(csvFile)
+try:
+    for row in rows:
+        csvRow = []
+        for cell in row.findAll(['td', 'th']):
+            csvRow.append(cell.get_text())
+            writer.writerow(csvRow)
+finally:
+    csvFile.close()
