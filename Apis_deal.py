@@ -143,22 +143,51 @@
 #——————————————————————————
 # part 6
 #采集wiki 百科的网页里面的表格存储到csv文件
-import csv
-from urllib.request import urlopen
-from bs4 import BeautifulSoup
+# import csv
+# from urllib.request import urlopen
+# from bs4 import BeautifulSoup
+#
+# html = urlopen("http://en.wikipedia.org/wiki/Comparison_of_text_editors")
+# bsObj = BeautifulSoup(html, features='lxml')
+# table = bsObj.findAll("table", {"class":"wikitable"})[0]
+# rows = table.findAll("tr")
+#
+# csvFile = open(r"E:\day0000\gitignorefolder\editors.csv", "w+", newline='', encoding='utf-8')
+# writer = csv.writer(csvFile)
+# try:
+#     for row in rows:
+#         csvRow = []
+#         for cell in row.findAll(['td', 'th']):
+#             csvRow.append(cell.get_text())
+#             writer.writerow(csvRow)
+# finally:
+#     csvFile.close()
 
-html = urlopen("http://en.wikipedia.org/wiki/Comparison_of_text_editors")
-bsObj = BeautifulSoup(html, features='lxml')
-table = bsObj.findAll("table", {"class":"wikitable"})[0]
-rows = table.findAll("tr")
+#——————————————————————————
+# 插入一部分mysql的用法
+# 1 CREATE DATABASE put a name; 结尾要使用； 非常重要
+# 2 USE put a name; 使用这个数据库 put a name
+# 3 CREATE TABLE put 2nd name; 在put a name 库之中建立一张表 叫做put 2nd name 这是不行的，还要跟上定义表头项目
+# 4CREATE TABLE put 2nd name (id BIGINT(7) NOT NULL AUTO_INCREMENT, title VARCHAR(200),
+# content VARCHAR(10000), created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(id));
+# 这样才能建立一张表 不报错
+# 5 INSERT INTO pages (title, content) VALUES ("Test page title", "This is some test page content. It can be up to 10,000 characters long."); 结尾的分号 很重要啊
+# 6 SELECT * FROM pages WHERE id = 2; 在pages 中找到并显示id 2的内容 *表示全部内容
+# 7 SELECT * FROM pages WHERE title LIKE "%test%"; 找到title中包含了test的所有条目
+# 8 SELECT id, title FROM pages WHERE content LIKE "%page content%"; 找到内容content中包含page content的 id title 这次不用显示所有。
+# 9 DELETE FROM pages WHERE id = 1; 删除一个set 可以先使用SELECT查看一下 避免删除错误 不能忘了WHERE 你可能删除了所有内容
+# 10 UPDATE pages SET title="A new title", content="Some new content" WHERE id =2; 更改id = 2 的内容吧。
+#——————————————————————————
+# part7
+#建立一个链接mysql
+import pymysql
 
-csvFile = open(r"E:\day0000\gitignorefolder\editors.csv", "w+", newline='', encoding='utf-8')
-writer = csv.writer(csvFile)
-try:
-    for row in rows:
-        csvRow = []
-        for cell in row.findAll(['td', 'th']):
-            csvRow.append(cell.get_text())
-            writer.writerow(csvRow)
-finally:
-    csvFile.close()
+# conn = pymysql.connect(host = '127.0.0.1', unix_socket='/tmp/mysql.sock', user='root', passwd='123456', db='mysql') 用的windows的话，删除 unix_socket='/tmp/mysql.sock'
+conn = pymysql.connect(host = '127.0.0.1', user='root', passwd='123456', db='mysql')
+cur = conn.cursor()
+cur.execute("USE scraping")
+
+cur.execute("SELECT * FROM pages WHERE id=1")
+print(cur.fetchone())
+cur.close()
+conn.close()
