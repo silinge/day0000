@@ -180,14 +180,52 @@
 #——————————————————————————
 # part7
 #建立一个链接mysql
-import pymysql
+# import pymysql
 
 # conn = pymysql.connect(host = '127.0.0.1', unix_socket='/tmp/mysql.sock', user='root', passwd='123456', db='mysql') 用的windows的话，删除 unix_socket='/tmp/mysql.sock'
-conn = pymysql.connect(host = '127.0.0.1', user='root', passwd='123456', db='mysql')
-cur = conn.cursor()
-cur.execute("USE scraping")
+# conn = pymysql.connect(host = '127.0.0.1', user='root', passwd='123456', db='mysql')
+# cur = conn.cursor()
+# cur.execute("USE scraping")
+#
+# cur.execute("SELECT * FROM pages WHERE id=2")
+# print(cur.fetchone())
+# cur.close()
+# conn.close()
+#真的可以连上
+#——————————————————————————
+# ALTER
+# DATABASE
+# scraping
+# CHARACTER
+# SET = utf8mb4
+# COLLATE = utf8mb4_unicode_ci;
+#
+# USE scraping;
+#
+# ALTER
+# TABLE
+# pages
+# CONVERT
+# TO
+# CHARACTER
+# SET
+# utf8mb4
+# COLLATE
+# utf8mb4_unicode_ci;
+#
+# ALTER
+# TABLE
+# pages
+# CHANGE
+# title
+# title
+# VARCHAR(200)
+# CHARACTER
+# SET
+# utf8mb4
+# COLLATE
+# utf8mb4_unicode_ci;
+#
+# ALTER TABLE pages CHANGE content content VARCHAR(10000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-cur.execute("SELECT * FROM pages WHERE id=1")
-print(cur.fetchone())
-cur.close()
-conn.close()
+# 用于转换mysql格式为Unicode 以避免使用某些文字出现乱码
