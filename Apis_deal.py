@@ -313,3 +313,37 @@
 # cur.close()
 # conn.close()
 # 这段程序可能需要运行几天 wiki的服务器最终会拒绝访问，测试了几分钟已经存了近3000个链接
+# import smtplib
+# from email.mime.text import MIMEText
+# msg = MIMEText("The body of the email is here")
+# msg["Subject"] = "An Email Alert"
+# msg["From"] = "address@emailwhosend.com"
+# msg["To"] = "address@emailwhoreceive.com"
+#
+# s = smtplib.SMTP('localhost')
+# s.send_message(msg)
+# s.quit()
+# 当你的电脑有一个正常运行的SMTP客户端 再把localhost改成远程服务器地址就可以发信了
+
+# import smtplib
+# from email.mime.text import MIMEText
+# from bs4 import BeautifulSoup
+# from urllib.request import urlopen
+# import time
+# def sendMail(subject, body):
+#     msg = MIMEText(body)
+#     msg['Subject'] = subject
+#     msg['From'] = "fromemailaddress"
+#     msg['To'] = "toemailaddress"
+#
+#     s = smtplib.SMTP('localhost')
+#     s.send_message(msg)
+#     s.quit()
+#
+# bsObj = BeautifulSoup(urlopen("http://isitchristmas.com/"), features='lxml')
+# while(bsObj.find("a", {"id":"answer"}).attrs['tittle'] == "NO"):
+#     print("It is not Christmas yet.")
+#     time.sleep(3600)
+# bsObj = BeautifulSoup(urlopen("https://isitchristmas.com/"))
+# sendMail("It is Christmas!", "According to http://itischristmas.com, it is Christmas!")
+# 每隔一个小时检查一个网站是不是圣诞节到了，如果到了 给你发一封邮件告诉你 
