@@ -231,35 +231,85 @@
 # 用于转换mysql格式为Unicode 以避免使用某些文字出现乱码
 #——————————————————————————
 # part8
-from urllib.request import urlopen
-from bs4 import BeautifulSoup
-import re
-import datetime
-import random
-import pymysql
-conn = pymysql.connect(host='127.0.0.1', user='root', passwd='123456', db='mysql', charset='utf8')
-#windows 系统下不用写 unix_socket的内容 linux 需要写 passwd 改成你的密码
-cur = conn.cursor()
-cur.execute("USE scraping")
-random.seed(datetime.datetime.now())
+# from urllib.request import urlopen
+# from bs4 import BeautifulSoup
+# import re
+# import datetime
+# import random
+# import pymysql
+# conn = pymysql.connect(host='127.0.0.1', user='root', passwd='123456', db='mysql', charset='utf8')
+# #windows 系统下不用写 unix_socket的内容 linux 需要写 passwd 改成你的密码
+# cur = conn.cursor()
+# cur.execute("USE scraping")
+# random.seed(datetime.datetime.now())
+#
+# def store(title, content):
+#     cur.execute("INSERT INTO pages (title, content) VALUES (\"%s\",\"%s\")", (title, content))
+#     cur.connection.commit()
+#
+# def getLinks(articleUrl):
+#     html = urlopen("http://en.wikipedia.org"+articleUrl)
+#     bsObj = BeautifulSoup(html, features='lxml')
+#     title = bsObj.find("h1").get_text()
+#     content = bsObj.find("div", {"id":"mw-content-text"}).find("p").get_text()
+#     store(title,content)
+#     return bsObj.find("div",{"id":"bodyContent"}).findAll("a", href=re.compile("^(/wiki/)((?!:).)*$"))
+# links = getLinks("/wiki/Kevin_Bacon")
+# try:
+#     while len(links) >0:
+#         newArticle = links[random.randint(0, len(links)-1)].attrs["href"]
+#         print(newArticle)
+#         links = getLinks(newArticle)
+# finally:
+#     cur.close()
+#     conn.close()
 
-def store(title, content):
-    cur.execute("INSERT INTO pages (title, content) VALUES (\"%s\",\"%s\")", (title, content))
-    cur.connection.commit()
-
-def getLinks(articleUrl):
-    html = urlopen("http://en.wikipedia.org"+articleUrl)
-    bsObj = BeautifulSoup(html, features='lxml')
-    title = bsObj.find("h1").get_text()
-    content = bsObj.find("div", {"id":"mw-content-text"}).find("p").get_text()
-    store(title,content)
-    return bsObj.find("div",{"id":"bodyContent"}).findAll("a", href=re.compile("^(/wiki/)((?!:).)*$"))
-links = getLinks("/wiki/Kevin_Bacon")
-try:
-    while len(links) >0:
-        newArticle = links[random.randint(0, len(links)-1)].attrs["href"]
-        print(newArticle)
-        links = getLinks(newArticle)
-finally:
-    cur.close()
-    conn.close()
+#——————————————————————————
+# part9
+# CREATE TABLE wikipedia.pages (id INT NOT NULL AUTO_INCREMENT, url VARCHAR(255) NOT NULL, created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id));
+# 数据库命令 创建新的数据库 wikipedia 并在其下创建表pages 这些名称都不用加引号 否则要报错
+# CREATE TABLE wikipedia.links (id INT NOT NULL AUTO_INCREMENT, fromPagedId INT NULL, toPageId INT NULL, created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id));
+# 创建一张新表links
+# from bs4 import BeautifulSoup
+# import re
+# from urllib.request import urlopen
+# import pymysql
+#
+# conn = pymysql.connect(host='127.0.0.1', user='root', passwd='123456', db='mysql', charset='utf8')
+# cur = conn.cursor()
+# cur.execute("USE wikipedia")
+#
+# def insertPageIfNotExists(url):
+#     cur.execute("SELECT * FROM pages WHERE url=%s", (url))
+#     if cur.rowcount ==0:
+#         cur.execute("INSERT INTO PAGES (url) VALUES(%s)", (url))
+#         conn.commit()
+#         return cur.lastrowid
+#     else:
+#         return cur.fetchone()[0]
+#
+# def insertLink(fromPageId, toPageId):
+#     cur.execute("SELECT * FROM links WHERE fromPageId = %s AND toPageId = %s", (int(fromPageId), int(toPageId)))
+#     if cur.rowcount == 0:
+#         cur.execute("INSERT INTO links (fromPageId, toPageId) VALUES(%s, %s)", (int(fromPageId), int(toPageId)))
+#         conn.commit()
+#
+# pages = set()
+#
+# def getLinks(pageUrl, recursionLevel):
+#     global pages
+#     if recursionLevel > 4:
+#         return;
+#     pageId = insertPageIfNotExists(pageUrl)
+#     html = urlopen("http://en.wikipedia.org"+pageUrl)
+#     bsObj = BeautifulSoup(html, features='lxml')
+#     for link in bsObj.findAll("a", href = re.compile("^(/wiki/)((?!:).)*$")):
+#         insertLink(pageId, insertPageIfNotExists(link.attrs['href']))
+#         if link.attrs['href'] not in pages:
+#             newPage = link.attrs['href']
+#             pages.add(newPage)
+#             getLinks(newPage, recursionLevel+1)
+# getLinks("/wiki/Kevin_Bacon", 0)
+# cur.close()
+# conn.close()
+# 这段程序可能需要运行几天 wiki的服务器最终会拒绝访问，测试了几分钟已经存了近3000个链接
