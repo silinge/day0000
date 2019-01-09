@@ -346,4 +346,95 @@
 #     time.sleep(3600)
 # bsObj = BeautifulSoup(urlopen("https://isitchristmas.com/"))
 # sendMail("It is Christmas!", "According to http://itischristmas.com, it is Christmas!")
-# 每隔一个小时检查一个网站是不是圣诞节到了，如果到了 给你发一封邮件告诉你 
+# 每隔一个小时检查一个网站是不是圣诞节到了，如果到了 给你发一封邮件告诉你
+#——————————————————————————
+# part10
+# from urllib.request import urlopen
+# textPage = urlopen("http://www.pythonscraping.com/pages/warandpeace/chapter1.txt")
+# print(textPage.read())
+# 直接读取文本
+# from urllib.request import  urlopen
+#
+# textPage = urlopen("http://www.pythonscraping.com/pages/warandpeace/chapter1-ru.txt")
+# print(str(textPage.read(), 'utf-8'))
+# 俄文版本要指定编码 才能更好的显示出文本
+#——————————————————————————
+# part11
+# from urllib.request import urlopen
+# from io import StringIO
+# import csv
+#
+# data = urlopen("http://pythonscraping.com/files/MontyPythonAlbums.csv").read().decode('ascii', 'ignore')
+# dataFile = StringIO(data)
+# csvReader = csv.reader(dataFile)
+#
+# # for row in csvReader:
+# #     print(row)
+#
+# # 将对象嵌入的思路
+# for row in csvReader:
+#     print("The album \""+row[0]+"\"was released in " + str(row[1]))
+# csvReader 和 csvDictReader是不同的 读取第一行的表头
+# from urllib.request import urlopen
+# from io import StringIO
+# import csv
+#
+# data = urlopen("http://pythonscraping.com/files/MontyPythonAlbums.csv").read().decode('ascii', 'ignore')
+# dataFile = StringIO(data)
+# dictReader = csv.DictReader(dataFile)
+# # print(dictReader.fieldnames)
+# for row in dictReader:
+#     print(row)
+
+# 读取pdf文件
+# from urllib.request import urlopen
+# from pdfminer.pdfinterp import PDFResourceManager, process_pdf
+# from pdfminer.converter import TextConverter
+# from pdfminer.layout import LAParams
+# from io import StringIO
+# from io import open
+#
+# def readPDF(pdfFile):
+#     rsrcmgr = PDFResourceManager()
+#     restr = StringIO()
+#     laparams = LAParams()
+#     device = TextConverter(rsrcmgr, restr, laparams=laparams)
+#
+#     process_pdf(rsrcmgr, device, pdfFile)
+#     device.close()
+#
+#     content = restr.getvalue()
+#     restr.close()
+#     return content
+#
+# pdfFile = urlopen("http://pythonscraping.com/pages/warandpeace/chapter1.pdf")
+# outputString = readPDF(pdfFile)
+# print(outputString)
+# pdfFile.close()
+
+# 处理doc 文件
+
+# from zipfile import ZipFile
+# from urllib.request import urlopen
+# from io import BytesIO
+#
+# wordFile = urlopen("http://pythonscraping.com/pages/AWordDocument.docx").read()
+# wordFile = BytesIO(wordFile)
+# document = ZipFile(wordFile)
+# xml_content = document.read('word/document.xml')
+# print(xml_content.decode('utf-8'))
+# 直接读取xml 不够理想，没法阅读 再试试处理xml 标签的内容抽出正文
+from zipfile import ZipFile
+from urllib.request import urlopen
+from io import BytesIO
+from bs4 import BeautifulSoup
+
+wordFile = urlopen("http://pythonscraping.com/pages/AWordDocument.docx").read()
+wordFile = BytesIO(wordFile)
+document = ZipFile(wordFile)
+xml_content = document.read('word/document.xml')
+
+wordObj = BeautifulSoup(xml_content.decode('utf-8'), 'lxml')
+textString = wordObj.findAll("w:t")
+for textElem in textString:
+    print(textElem.text)
