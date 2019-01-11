@@ -440,26 +440,70 @@
 #     print(textElem.text)
 
 # 处理不同文本样式的标签
-from zipfile import ZipFile
+# from zipfile import ZipFile
+# from urllib.request import urlopen
+# from io import BytesIO
+# from bs4 import BeautifulSoup
+#
+# wordFile = urlopen("http://pythonscraping.com/pages/AWordDocument.docx").read()
+# wordFile = BytesIO(wordFile)
+# document = ZipFile(wordFile)
+# xml_content = document.read("word/document.xml")
+#
+# wordObj = BeautifulSoup(xml_content.decode("utf-8"), 'lxml')
+# textStrings = wordObj.findAll('w:t')
+# for textElem in textStrings:
+#     closeTag = ""
+#     try:
+#         style = textElem.parent.previousSibling.find("w:pstyle")
+#         if style is not None and style["w:val"] == "Title":
+#             print("<h1>")
+#             closeTag = "</h1>"
+#     except AttributeError:
+#         pass
+#     print(textElem.text)
+#     print(closeTag)
+
+#——————————————————————————
+# part12 new chapter  dirty data to clean
+# from urllib.request import urlopen
+# from bs4 import BeautifulSoup
+#
+# def ngrams(inputs, n):
+#     inputs = inputs.split(" ")
+#     output = []
+#     for i in range(len(inputs)-n+1):
+#         output.append(inputs[i:i+n])
+#     return output
+#
+# html = urlopen("http://en.wikipedia.org/wiki/Python_(programming_language)")
+# bsObj = BeautifulSoup(html, 'lxml')
+# content = bsObj.find("div", {"id":"mw-content-text"}).get_text()
+# ngrams = ngrams(content, 2)
+# print(ngrams)
+# print("2-grams count is :"+str(len(ngrams)))
+
+# 第二版 去掉一些转义符 还有Unicode
+
 from urllib.request import urlopen
-from io import BytesIO
 from bs4 import BeautifulSoup
+import re
 
-wordFile = urlopen("http://pythonscraping.com/pages/AWordDocument.docx").read()
-wordFile = BytesIO(wordFile)
-document = ZipFile(wordFile)
-xml_content = document.read("word/document.xml")
+def ngrams(content, n):
+    content = re.sub('\n+', " ", content)
+    content = re.sub(' +', " ", content)
+    content = bytes(content, "UTF-8")
+    content = content.decode("ascii", "ignore")
+    print(content)
+    content = content.split(' ')
+    output = []
+    for i in range(len(content)-n+1):
+        output.append(content[i:i+n])
+    return output
 
-wordObj = BeautifulSoup(xml_content.decode("utf-8"), 'lxml')
-textStrings = wordObj.findAll('w:t')
-for textElem in textStrings:
-    closeTag = ""
-    try:
-        style = textElem.parent.previousSibling.find("w:pstyle")
-        if style is not None and style["w:val"] == "Title":
-            print("<h1>")
-            closeTag = "</h1>"
-    except AttributeError:
-        pass
-    print(textElem.text)
-    print(closeTag)
+html = urlopen("http://en.wikipedia.org/wiki/Python_(programming_language)")
+bsObj = BeautifulSoup(html, 'lxml')
+content = bsObj.find("div", {"id":"mw-content-text"}).get_text()
+ngrams = ngrams(content, 2)
+print(ngrams)
+print("2-grams count is :"+str(len(ngrams)))
