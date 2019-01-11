@@ -424,6 +424,22 @@
 # xml_content = document.read('word/document.xml')
 # print(xml_content.decode('utf-8'))
 # 直接读取xml 不够理想，没法阅读 再试试处理xml 标签的内容抽出正文
+# from zipfile import ZipFile
+# from urllib.request import urlopen
+# from io import BytesIO
+# from bs4 import BeautifulSoup
+#
+# wordFile = urlopen("http://pythonscraping.com/pages/AWordDocument.docx").read()
+# wordFile = BytesIO(wordFile)
+# document = ZipFile(wordFile)
+# xml_content = document.read('word/document.xml')
+#
+# wordObj = BeautifulSoup(xml_content.decode('utf-8'), 'lxml')
+# textString = wordObj.findAll("w:t")
+# for textElem in textString:
+#     print(textElem.text)
+
+# 处理不同文本样式的标签
 from zipfile import ZipFile
 from urllib.request import urlopen
 from io import BytesIO
@@ -432,9 +448,18 @@ from bs4 import BeautifulSoup
 wordFile = urlopen("http://pythonscraping.com/pages/AWordDocument.docx").read()
 wordFile = BytesIO(wordFile)
 document = ZipFile(wordFile)
-xml_content = document.read('word/document.xml')
+xml_content = document.read("word/document.xml")
 
-wordObj = BeautifulSoup(xml_content.decode('utf-8'), 'lxml')
-textString = wordObj.findAll("w:t")
-for textElem in textString:
+wordObj = BeautifulSoup(xml_content.decode("utf-8"), 'lxml')
+textStrings = wordObj.findAll('w:t')
+for textElem in textStrings:
+    closeTag = ""
+    try:
+        style = textElem.parent.previousSibling.find("w:pstyle")
+        if style is not None and style["w:val"] == "Title":
+            print("<h1>")
+            closeTag = "</h1>"
+    except AttributeError:
+        pass
     print(textElem.text)
+    print(closeTag)
