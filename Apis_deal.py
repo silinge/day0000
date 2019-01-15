@@ -485,25 +485,62 @@
 
 # 第二版 去掉一些转义符 还有Unicode
 
+# from urllib.request import urlopen
+# from bs4 import BeautifulSoup
+# import re
+#
+# def ngrams(content, n):
+#     content = re.sub('\n+', " ", content)
+#     content = re.sub(' +', " ", content)
+#     content = bytes(content, "UTF-8")
+#     content = content.decode("ascii", "ignore")
+#     print(content)
+#     content = content.split(' ')
+#     output = []
+#     for i in range(len(content)-n+1):
+#         output.append(content[i:i+n])
+#     return output
+#
+# html = urlopen("http://en.wikipedia.org/wiki/Python_(programming_language)")
+# bsObj = BeautifulSoup(html, 'lxml')
+# content = bsObj.find("div", {"id":"mw-content-text"}).get_text()
+# ngrams = ngrams(content, 2)
+# print(ngrams)
+# print("2-grams count is :"+str(len(ngrams)))
+
+# 第三版 单独建立一个清洗用的函数
+
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
+import string
 
-def ngrams(content, n):
-    content = re.sub('\n+', " ", content)
-    content = re.sub(' +', " ", content)
-    content = bytes(content, "UTF-8")
-    content = content.decode("ascii", "ignore")
-    print(content)
-    content = content.split(' ')
+def cleanInput(inputs):
+    inputs = re.sub("\n+", " ", inputs)
+    inputs = re.sub("\[[0-9]*\]", "", inputs)
+    inputs = re.sub(" +", " ", inputs)
+    inputs = bytes(inputs, "utf-8")
+    inputs = inputs.decode("ascii", "ignore")
+    cleanInput = []
+    inputs = inputs.split(" ")
+    for item in inputs:
+        item = item.strip(string.punctuation)
+        if len(item) > 1 or (item.lower() == "a" or item.lower() == "i"):
+            cleanInput.append(item)
+    return cleanInput
+
+def ngrams(inputs, n):
+    inputs = cleanInput(inputs)
     output = []
-    for i in range(len(content)-n+1):
-        output.append(content[i:i+n])
+    for i in range(len(inputs) - n+1):
+        output.append(inputs[i:i+n])
     return output
 
 html = urlopen("http://en.wikipedia.org/wiki/Python_(programming_language)")
-bsObj = BeautifulSoup(html, 'lxml')
+bsObj = BeautifulSoup(html, "lxml")
 content = bsObj.find("div", {"id":"mw-content-text"}).get_text()
 ngrams = ngrams(content, 2)
-print(ngrams)
-print("2-grams count is :"+str(len(ngrams)))
+# print(ngrams)
+
+# import string
+# print(string.punctuation) 获取了python中所有的标点符号 英文格式 处理中文的 还得手动试试 strip(string.punctuation) 就是扔掉了单词前后端的标点了。
