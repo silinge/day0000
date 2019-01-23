@@ -509,30 +509,67 @@
 # print("2-grams count is :"+str(len(ngrams)))
 
 # 第三版 单独建立一个清洗用的函数
+# from collections import OrderedDict
+# from urllib.request import urlopen
+# from bs4 import BeautifulSoup
+# import re
+# import string
+#
+# def cleanInput(inputs):
+#     inputs = re.sub("\n+", " ", inputs)
+#     inputs = re.sub("\[[0-9]*\]", "", inputs)
+#     inputs = re.sub(" +", " ", inputs)
+#     inputs = bytes(inputs, "utf-8")
+#     inputs = inputs.decode("ascii", "ignore")
+#     cleanInput = []
+#     inputs = inputs.split(" ")
+#     for item in inputs:
+#         item = item.strip(string.punctuation)
+#         if len(item) > 1 or (item.lower() == "a" or item.lower() == "i"):
+#             cleanInput.append(item)
+#     return cleanInput
+#
+# def ngrams(inputs, n):
+#     inputs = cleanInput(inputs)
+#     output = []
+#     for i in range(len(inputs) - n+1):
+#         output.append(inputs[i:i+n])
+#     return output
+#
+# html = urlopen("http://en.wikipedia.org/wiki/Python_(programming_language)")
+# bsObj = BeautifulSoup(html, "lxml")
+# content = bsObj.find("div", {"id":"mw-content-text"}).get_text()
+# ngrams = ngrams(content, 2)
+# ngrams = OrderedDict(sorted(ngrams, key=lambda t:t[1], reverse=True))
+# print(ngrams)
 
+# import string
+# print(string.punctuation) 获取了python中所有的标点符号 英文格式 处理中文的 还得手动试试 strip(string.punctuation) 就是扔掉了单词前后端的标点了。
+# 第四版 对数据去重
+from collections import OrderedDict
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 import string
 
 def cleanInput(inputs):
-    inputs = re.sub("\n+", " ", inputs)
-    inputs = re.sub("\[[0-9]*\]", "", inputs)
-    inputs = re.sub(" +", " ", inputs)
-    inputs = bytes(inputs, "utf-8")
+    inputs = re.sub('\n+', " ", inputs)
+    inputs = re.sub('\[[0-9]*\]', "", inputs)
+    inputs = re.sub(' +', " ", inputs)
+    inputs = bytes(inputs, "UTF-8")
     inputs = inputs.decode("ascii", "ignore")
     cleanInput = []
-    inputs = inputs.split(" ")
+    inputs = inputs.split(' ')
     for item in inputs:
         item = item.strip(string.punctuation)
-        if len(item) > 1 or (item.lower() == "a" or item.lower() == "i"):
+        if len(item) > 1 or (item.lower() == 'a' or item.lower() == 'i'):
             cleanInput.append(item)
     return cleanInput
 
 def ngrams(inputs, n):
     inputs = cleanInput(inputs)
     output = []
-    for i in range(len(inputs) - n+1):
+    for i in range(len(inputs)- n+1):
         output.append(inputs[i:i+n])
     return output
 
@@ -540,7 +577,11 @@ html = urlopen("http://en.wikipedia.org/wiki/Python_(programming_language)")
 bsObj = BeautifulSoup(html, "lxml")
 content = bsObj.find("div", {"id":"mw-content-text"}).get_text()
 ngrams = ngrams(content, 2)
-# print(ngrams)
+# ngrams = dict(ngrams)
+# print(type(ngrams))
+# ngrams = OrderedDict(sorted(ngrams, key=lambda t:t[1], reverse=True))
+ngrams = OrderedDict(sorted(ngrams.items(), key=lambda t:t[1], reverse=True))
 
-# import string
-# print(string.punctuation) 获取了python中所有的标点符号 英文格式 处理中文的 还得手动试试 strip(string.punctuation) 就是扔掉了单词前后端的标点了。
+print(ngrams)
+# #——————————————————————————
+# # part 13
