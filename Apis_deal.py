@@ -546,42 +546,87 @@
 # import string
 # print(string.punctuation) 获取了python中所有的标点符号 英文格式 处理中文的 还得手动试试 strip(string.punctuation) 就是扔掉了单词前后端的标点了。
 # 第四版 对数据去重
-from collections import OrderedDict
-from urllib.request import urlopen
-from bs4 import BeautifulSoup
-import re
-import string
-
-def cleanInput(inputs):
-    inputs = re.sub('\n+', " ", inputs)
-    inputs = re.sub('\[[0-9]*\]', "", inputs)
-    inputs = re.sub(' +', " ", inputs)
-    inputs = bytes(inputs, "UTF-8")
-    inputs = inputs.decode("ascii", "ignore")
-    cleanInput = []
-    inputs = inputs.split(' ')
-    for item in inputs:
-        item = item.strip(string.punctuation)
-        if len(item) > 1 or (item.lower() == 'a' or item.lower() == 'i'):
-            cleanInput.append(item)
-    return cleanInput
-
-def ngrams(inputs, n):
-    inputs = cleanInput(inputs)
-    output = []
-    for i in range(len(inputs)- n+1):
-        output.append(inputs[i:i+n])
-    return output
-
-html = urlopen("http://en.wikipedia.org/wiki/Python_(programming_language)")
-bsObj = BeautifulSoup(html, "lxml")
-content = bsObj.find("div", {"id":"mw-content-text"}).get_text()
-ngrams = ngrams(content, 2)
+# from collections import OrderedDict
+# from urllib.request import urlopen
+# from bs4 import BeautifulSoup
+# import re
+# import string
+#
+# def cleanInput(inputs):
+#     inputs = re.sub('\n+', " ", inputs)
+#     inputs = re.sub('\[[0-9]*\]', "", inputs)
+#     inputs = re.sub(' +', " ", inputs)
+#     inputs = bytes(inputs, "UTF-8")
+#     inputs = inputs.decode("ascii", "ignore")
+#     cleanInput = []
+#     inputs = inputs.split(' ')
+#     for item in inputs:
+#         item = item.strip(string.punctuation)
+#         if len(item) > 1 or (item.lower() == 'a' or item.lower() == 'i'):
+#             cleanInput.append(item)
+#     return cleanInput
+#
+# def ngrams(inputs, n):
+#     inputs = cleanInput(inputs)
+#     output = []
+#     for i in range(len(inputs)- n+1):
+#         output.append(inputs[i:i+n])
+#     return output
+#
+# html = urlopen("http://en.wikipedia.org/wiki/Python_(programming_language)")
+# bsObj = BeautifulSoup(html, "lxml")
+# content = bsObj.find("div", {"id":"mw-content-text"}).get_text()
+# ngrams = ngrams(content, 2)
 # ngrams = dict(ngrams)
 # print(type(ngrams))
 # ngrams = OrderedDict(sorted(ngrams, key=lambda t:t[1], reverse=True))
-ngrams = OrderedDict(sorted(ngrams.items(), key=lambda t:t[1], reverse=True))
-
-print(ngrams)
+# ngrams = OrderedDict(sorted(ngrams.items(), key=lambda t:t[1], reverse=True))
+#
+# print(ngrams)
 # #——————————————————————————
 # # part 13
+from urllib.request import urlopen
+from random import randint
+
+def wordListSum(wordList):
+    sum = 0
+    for word, value in wordList.items():
+        sum += value
+    return sum
+def retrieveRandomWord(wordList):
+
+    randIndex = randint(1, wordListSum(wordList))
+    for word, value in wordList.items():
+        randIndex -= value
+        if randIndex <=0:
+            return word
+
+def buildDict(text):
+    text = text.replace("\n", " ");
+    text = text.replace("\"", " ");
+    punctuation = [',', ',', ';', ':']
+    for symbol in punctuation:
+        text = text.replace(symbol, " "+symbol+" ");
+    words = text.split(" ")
+    words = [word for word in words if word != ""]
+    wordDict = {}
+    for i in range(1, len(words)):
+        if words[i-1] not in wordDict:
+            wordDict[words[i-1]] = {}
+        if words[i] not in wordDict[words[i-1]]:
+            wordDict[words[i-1]][words[i]] = 0
+        wordDict[words[i-1]][words[i]] = wordDict[words[i-1]][words[i]] +1
+
+    return wordDict
+
+text = str(urlopen("http://pythonscraping.com/files/inaugurationSpeech.txt").read(), "utf-8")
+wordDict = buildDict(text)
+
+length = 100
+chain = ""
+currentWord = "I"
+for i in range(0, length):
+    chain += currentWord+" "
+    currentWord = retrieveRandomWord(wordDict[currentWord])
+
+print(chain)
