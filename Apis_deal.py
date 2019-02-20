@@ -585,48 +585,101 @@
 # print(ngrams)
 # #——————————————————————————
 # # part 13
+# from urllib.request import urlopen
+# from random import randint
+#
+# def wordListSum(wordList):
+#     sum = 0
+#     for word, value in wordList.items():
+#         sum += value
+#     return sum
+# def retrieveRandomWord(wordList):
+#
+#     randIndex = randint(1, wordListSum(wordList))
+#     for word, value in wordList.items():
+#         randIndex -= value
+#         if randIndex <=0:
+#             return word
+#
+# def buildDict(text):
+#     text = text.replace("\n", " ");
+#     text = text.replace("\"", " ");
+#     punctuation = [',', ',', ';', ':']
+#     for symbol in punctuation:
+#         text = text.replace(symbol, " "+symbol+" ");
+#     words = text.split(" ")
+#     words = [word for word in words if word != ""]
+#     wordDict = {}
+#     for i in range(1, len(words)):
+#         if words[i-1] not in wordDict:
+#             wordDict[words[i-1]] = {}
+#         if words[i] not in wordDict[words[i-1]]:
+#             wordDict[words[i-1]][words[i]] = 0
+#         wordDict[words[i-1]][words[i]] = wordDict[words[i-1]][words[i]] +1
+#
+#     return wordDict
+#
+# text = str(urlopen("http://pythonscraping.com/files/inaugurationSpeech.txt").read(), "utf-8")
+# wordDict = buildDict(text)
+#
+# length = 100
+# chain = ""
+# currentWord = "I"
+# for i in range(0, length):
+#     chain += currentWord+" "
+#     currentWord = retrieveRandomWord(wordDict[currentWord])
+#
+# print(chain)
+# #——————————————————————————
+# # part 14
 from urllib.request import urlopen
-from random import randint
+from bs4 import BeautifulSoup
+import pymysql
 
-def wordListSum(wordList):
-    sum = 0
-    for word, value in wordList.items():
-        sum += value
-    return sum
-def retrieveRandomWord(wordList):
+conn = pymysql.connect(host = '127.0.0.1', user = 'root', passwd='123456', db = 'mysql', charset = 'utf8')
 
-    randIndex = randint(1, wordListSum(wordList))
-    for word, value in wordList.items():
-        randIndex -= value
-        if randIndex <=0:
-            return word
+cur = conn.cursor()
+cur.execute("USE wikipedia")
 
-def buildDict(text):
-    text = text.replace("\n", " ");
-    text = text.replace("\"", " ");
-    punctuation = [',', ',', ';', ':']
-    for symbol in punctuation:
-        text = text.replace(symbol, " "+symbol+" ");
-    words = text.split(" ")
-    words = [word for word in words if word != ""]
-    wordDict = {}
-    for i in range(1, len(words)):
-        if words[i-1] not in wordDict:
-            wordDict[words[i-1]] = {}
-        if words[i] not in wordDict[words[i-1]]:
-            wordDict[words[i-1]][words[i]] = 0
-        wordDict[words[i-1]][words[i]] = wordDict[words[i-1]][words[i]] +1
+class SolutionFound(RuntimeError):
+    def __init__(self, message):
+        self.message = message
 
-    return wordDict
+def getLinks(fromPageId):
+    cur.execute("SELECT toPageId FROM links WHERE fromPageId = %s", (fromPageId))
+    if cur.rowcount == 0:
+        return None
+    else:
+        return [x[0] for x in cur.fetchall()]
 
-text = str(urlopen("http://pythonscraping.com/files/inaugurationSpeech.txt").read(), "utf-8")
-wordDict = buildDict(text)
+def constructDict(currentPageId):
+    links = getLinks(currentPageId)
+    if links:
+        return dict(zip(links, [{}]*len(links)))
+    return {}
 
-length = 100
-chain = ""
-currentWord = "I"
-for i in range(0, length):
-    chain += currentWord+" "
-    currentWord = retrieveRandomWord(wordDict[currentWord])
+def searchDepth(targetPageId, currentPageId, linkTree, depth):
+    if depth == 0:
+        return linkTree
+    if not linkTree:
+        linkTree = constructDict(currentPageId)
+        if not linkTree:
+            return {}
+    if targetPageId in linkTree.keys():
+        print("TARGET"+str(targetPageId)+"FOUND!")
+        raise SolutionFound("PAGE:"+str(currentPageId))
 
-print(chain)
+    for branchKey, branchValue in linkTree.items():
+        try:
+            linkTree[branchKey] = searchDepth(targetPageId, branchKey, branchValue, depth-1)
+        except SolutionFound as e:
+            print(e.message)
+            raise SolutionFound("PAGE:"+str(currentPageId))
+        return linkTree
+
+try:
+    searchDepth(134951, 1, {}, 4)
+    print("No solution found")
+except SolutionFound as e:
+    print(e.message)
+
