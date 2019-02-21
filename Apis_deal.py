@@ -684,3 +684,30 @@
 #     print(e.message)
 
 # pick up again
+#day 0007
+# from nltk import word_tokenize
+# from nltk import Text
+# tokens = word_tokenize("Here is some not very interesting text")
+# text = Text(tokens)
+# print(text)
+
+# from nltk.book import *
+# print(len(text3)/len(words))
+# from nltk import FreqDist
+# fdist = FreqDist(text6)
+# print(fdist.most_common(10))
+# print(fdist["Grail"])
+
+
+# from nltk.book import *
+# from nltk import bigrams
+# bigrams = bigrams(text6)
+# bigramsDist = FreqDist(bigrams)
+# print(bigramsDist[("Sir", "Robin")])
+
+from nltk.book import *
+from nltk import ngrams
+fourgrams = ngrams(text6, 4)
+for fourgram in fourgrams:
+    if fourgram[0] == "coconut":
+        print(fourgram)
