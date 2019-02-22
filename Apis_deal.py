@@ -711,6 +711,4 @@
 # # for fourgram in fourgrams:
 # #     if fourgram[0] == "coconut":
 # #         print(fourgram)
-
-# push push push push
-#branch is bad
+# make them link again
