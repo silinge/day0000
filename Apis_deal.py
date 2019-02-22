@@ -712,3 +712,36 @@
 # #     if fourgram[0] == "coconut":
 # #         print(fourgram)
 # make them link again
+
+# from nltk.book import *
+# from nltk import word_tokenize
+# text = word_tokenize("Strange women lying in ponds distributing swords is no basis for a system of government. "
+                     # "Supreme executive derives from a mandate from the masses, net from some farcical aquatic ceremony.")
+# textone = word_tokenize("the dust was thick so he had to dust")
+# from nltk import pos_tag
+# print(pos_tag(textone))
+
+# from nltk import word_tokenize, sent_tokenize, pos_tag
+# sentences = sent_tokenize("Google is one of the best companies in the world. I constantly google myself to see what I'm up to.")
+# nouns = ['NN', 'NNS', 'NNP', 'NNPS']
+#
+# for sentence in sentences:
+#     if "google" in sentence.lower():
+#         taggedWords = pos_tag(word_tokenize(sentence))
+#         for word in taggedWords:
+#                 if word[0].lower() == "google" and word[1] in nouns:
+#                     print(sentence)
+
+#选出Google作为名词使用的那个句子 打印出来
+# part 15 -------------------------------------------
+# import requests
+# params = {'firstname': 'Williams', 'lastname': 'Xu'}
+# r = requests.post("http://pythonscraping.com/pages/files/processing.php", data=params) #书中给的链接错误 缺少pages
+# print(r.text)
+#向网页提交两个参数
+
+# import requests
+# params = {'email_addr':'DonotRunThis@gmail.com'}
+# r = requests.post("http://post.oreilly.com/client/o/oreilly/forms/quicksignup.cgi", data=params)
+# print(r.text)
+# 这是加入oreilly的邮箱列表 如果没有确认使用正常的邮箱 不用运行提交。
