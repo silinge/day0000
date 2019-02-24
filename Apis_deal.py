@@ -745,3 +745,35 @@
 # r = requests.post("http://post.oreilly.com/client/o/oreilly/forms/quicksignup.cgi", data=params)
 # print(r.text)
 # 这是加入oreilly的邮箱列表 如果没有确认使用正常的邮箱 不用运行提交。
+
+# import requests
+#
+# files = {'uploadFile':open("/e/f/g/milab.bmp", 'rb')}
+# r = requests.post("http://pythonscraping.com/pages/processing2.php", files = files)
+#
+# print(r.text)
+# 上传一个文件
+
+# import requests
+#
+# params = {'username': "July", 'password':"password"}
+# r = requests.post("http://pythonscraping.com/pages/cookies/welcome.php", params)
+# print("Cookie is set to: ")
+# print(r.cookies.get_dict())
+# print("---------------")
+# print("Going to profile page...")
+# r = requests.get("http://pythonscraping.com/pages/cookies/profile.php", cookies = r.cookies)
+# print(r.text)
+# 获取到cookie
+
+import requests
+
+session = requests.Session()
+params = {'username':'username', 'password':'password'}
+s = session.post("http://pythonscraping.com/pages/cookies/welcome.php", params)
+print("Cookie is set to: ")
+print(s.cookies.get_dict())
+print("---------------")
+print("Going to profile page...")
+s = session.get("http://pythonscraping.com/pages/cookies/profile.php")
+print(s.text)
