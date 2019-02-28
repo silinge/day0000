@@ -766,14 +766,23 @@
 # print(r.text)
 # 获取到cookie
 
-import requests
+# import requests
+#
+# session = requests.Session()
+# params = {'username':'username', 'password':'password'}
+# s = session.post("http://pythonscraping.com/pages/cookies/welcome.php", params)
+# print("Cookie is set to: ")
+# print(s.cookies.get_dict())
+# print("---------------")
+# print("Going to profile page...")
+# s = session.get("http://pythonscraping.com/pages/cookies/profile.php")
+# print(s.text)
 
-session = requests.Session()
-params = {'username':'username', 'password':'password'}
-s = session.post("http://pythonscraping.com/pages/cookies/welcome.php", params)
-print("Cookie is set to: ")
-print(s.cookies.get_dict())
-print("---------------")
-print("Going to profile page...")
-s = session.get("http://pythonscraping.com/pages/cookies/profile.php")
-print(s.text)
+#http 认证方式
+import requests
+from requests.auth import AuthBase
+from requests.auth import HTTPBasicAuth
+
+auth = HTTPBasicAuth("Ben", 'password')
+r = requests.post(url="http://pythonscraping.com/pages/auth/login.php", auth=auth)
+print(r.text)
