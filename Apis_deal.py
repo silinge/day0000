@@ -779,10 +779,92 @@
 # print(s.text)
 
 #http 认证方式
-import requests
-from requests.auth import AuthBase
-from requests.auth import HTTPBasicAuth
+# import requests
+# from requests.auth import AuthBase
+# from requests.auth import HTTPBasicAuth
+#
+# auth = HTTPBasicAuth("Ben", 'password')
+# r = requests.post(url="http://pythonscraping.com/pages/auth/login.php", auth=auth)
+# print(r.text)
 
-auth = HTTPBasicAuth("Ben", 'password')
-r = requests.post(url="http://pythonscraping.com/pages/auth/login.php", auth=auth)
-print(r.text)
+#part16_______________
+# day8
+# 采集javascript
+# from selenium import webdriver
+# # import time
+# # driver = webdriver.PhantomJS(executable_path=r"D:\phantomjs-2.1.1-windows\bin")
+# # driver.get("http://pythonscraping.com/pages/javascript/ajaxDemo.html")
+# # time.sleep(4)
+# # print(driver.find_element_by_id('content').text)
+# # driver.close()
+#很不幸 selenium 不再支持phantomjs了 所以教材要更新了，只能去使用无头版的chrome或者Firefox 那又是另外的代码了。
+# import requests
+#
+# files = {'uploadFile': open('../files/Python-logo.png', 'rb')}
+# r = requests.post("http://pythonscraping.com/pages/processing2.php", files=files)
+#
+# print(r.text)
+
+# import requests
+#
+# params = {'username':'Ryan', 'password':'password'}
+#
+# r = requests.post("http://pythonscraping.com/pages/cookies/welcome.php", params)
+# print("Cookie is set to: ")
+# print(r.cookies.get_dict())
+# print("__________________")
+# print("Going to profile page...")
+# r = requests.get("http://pythonscraping.com/pages/cookies/profile.php", cookies = r.cookies)
+# print(r.text)
+
+# import requests
+#
+# session = requests.Session()
+#
+# params = {'username':'whatname', 'password':'guesswhat'}
+#
+# s = session.post("http://pythonscraping.com/pages/cookies/welcome.php", params)
+# print("Cookie is set to:")
+# print(s.cookies.get_dict())
+# print("-------------------")
+# print("Going to profile page...")
+# s = session.get("http://pythonscraping.com/pages/cookies/profile.php")
+# print(s.text)
+# part17 -----------------------------------
+# image operate
+
+# from PIL import Image, ImageFilter
+#
+# fly = Image.open("55.jpg")
+# blurryfly = fly.filter(ImageFilter.GaussianBlur)
+# blurryfly.save("55_bulrred.jpg")
+# blurryfly.show()
+
+# from PIL import Image, ImageFilter
+# flynew = Image.open("‪E:/backup0219/SavedPictures/0601.jpg") 复制的路径报错的 改了
+# flynew = Image.open("E:/backup0219/SavedPictures/0601.jpg") 手动输入左斜杠正确
+# flynew = Image.open(r"E:\backup0219\SavedPictures\0601.jpg") 手动输入原来的路径加r 正确
+# blurrflynew = flynew.filter(ImageFilter.GaussianBlur)
+# blurrflynew.save("E:/backup0219/SavedPictures/0601_blurred.jpg")
+# blurrflynew.show()
+# 关于路径的问题 不能直接使用Windows 文件属性复制的路径来，这样会报错，手动输入一遍看起来一模一样就是没问题 也是有病
+#coding:utf-8
+from PIL import Image
+import subprocess
+
+# def cleanFile(filePath, newFilePath):
+#     image = Image.open(filePath)
+#
+#     image = image.point(lambda  x: 0 if x < 125 else 255) #'''通过对x< 数值的调整 来去掉灰影 增加识别的准确率 测试的图片 120 -130之间效果较好。'''
+#     image.save(newFilePath)
+#
+#     subprocess.call(["tesseract", newFilePath, 'output'])
+#
+#     outputFile = open("output.txt", 'r')
+#     print(outputFile.read())
+#     outputFile.close()
+#
+# cleanFile("C:/Users/XuWilliam/Pictures/Gradiant.jpg", "C:/Users/XuWilliam/Pictures/Gradiant_clean2.png")
+# cleanFile("C:/Users/XuWilliam/Pictures/Gradiant.tif", "C:/Users/XuWilliam/Pictures/Gradiant_clean2.png")
+# cleanFile(r"‪C:\Users\XuWilliam\Pictures\Gradiant.tif", r"C:\Users\XuWilliam\Pictures\Gradiant_clean2.png")
+# 对tif格式图片不友好 还要注意处理路径问题
