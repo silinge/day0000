@@ -920,3 +920,97 @@ import subprocess
 # else:
 #     print("There was a problem reading the CAPTCHA correctly!")
 # #反正运行了几次都失败了
+
+#单元测试
+# import unittest
+#
+# class TestAddition(unittest.TestCase):
+#     def setUp(self):
+#         print("Setting up the test")
+#
+#     def tearDown(self):
+#         print("Tearing down the test")
+#
+#     def test_twoPlusTwo(self):
+#         total = 9+2
+#         self.assertEqual(11, total)
+#
+# if __name__ == "__main__":
+#     unittest.main()
+
+#测试维基百科
+# from urllib.request import urlopen
+# from bs4 import BeautifulSoup
+# import unittest
+#
+# class TestWikipedia(unittest.TestCase):
+#     bsObj = None
+#     # @classmethod
+#     def setUpClass():
+#         global bsObj
+#         url = "http://en.wikipedia.org/wiki/Monty_Python"
+#         bsObj = BeautifulSoup(urlopen(url))
+#
+#     def test_titleText(self):
+#         global bsObj
+#         pageTitle = bsObj.find("h1").get_text()
+#         self.assertEqual("Monty Python", pageTitle)
+#
+#     def test_contentExists(self):
+#         global bsObj
+#         content = bsObj.find("div", {"id":"mw-content-text"})
+#         self.assertIsNotNone(content)
+#
+# if __name__ == '__main__':
+#     unittest.main()
+
+#2
+# from urllib.request import urlopen
+# from bs4 import BeautifulSoup
+# import  unittest
+# import re
+# import datetime
+# import random
+#
+# random.seed(datetime.datetime.now())
+#
+# class TestWikipedia(unittest.TestCase):
+#     bsObj = None
+#     url = None
+#
+#     def test_PageProperties(self):
+#         global bsObj
+#         global url
+#
+#         url = "http://en.wikipedia.org/wiki/Monty_Python"
+#
+#         for i in range(1, 100):
+#             bsObj = BeautifulSoup(urlopen(url), "lxml")
+#             titles = self.titleMatchesURL()
+#             self.assertEquals(titles[0], titles[1])
+#             self.assertTrue(self.contentExists())
+#             url = self.getNextLink()
+#         print("Done")
+#
+#     def titleMatchesURL(self):
+#         global bsObj
+#         global url
+#
+#         pageTitle = bsObj.find("h1").get_text()
+#         urlTitle = urlopen[(url.index("/wiki")+6):]
+#         urlTitle = urlTitle.replace("_", " ")
+#         urlTitle = unquote(urlTitle)
+#         return [pageTitle.lower(), urlTitle.lower()]
+#
+#     def contenExists(self):
+#         global bsObj
+#         content = bsObj.find("div", {"id":"mw-content-text"})
+#         if content is not None:
+#             return True
+#         return False
+#
+#     def getNextLink(articleUrl):
+#         html = urlopen("http://en.wikipedia.org" + articleUrl)
+#         bsObj1 = BeautifulSoup(html, "lxml")
+#         return bsObj1.find("div", {"id":"badyContent"}).findAll("a", href = re.compile("^(/wiki/)((?!:).)*$"))
+    # 获取随机链接有点混乱 第二遍再补上。
