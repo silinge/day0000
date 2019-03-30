@@ -1,0 +1,8 @@
+print("Hello 2019")
+print("hello there")
+print("what's up 'hi'.")
+print('I "said" do not, do I?')
+print("one line is OK ", end = "")
+print("see it is on one line?")
+print()
+print("another line blank line is ", )
