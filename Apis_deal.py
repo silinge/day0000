@@ -1014,3 +1014,17 @@ import subprocess
 #         bsObj1 = BeautifulSoup(html, "lxml")
 #         return bsObj1.find("div", {"id":"badyContent"}).findAll("a", href = re.compile("^(/wiki/)((?!:).)*$"))
     # 获取随机链接有点混乱 第二遍再补上。
+
+# import socks
+# import socket
+# from urllib.request import urlopen
+#
+# socks.set_default_proxy(socks.SOCKS5, "localhost", 9150)
+# socket.socket = socks.socksocket
+# print(urlopen("http://icanhazip.com").read())
+''' multiple line
+ha ha ha 
+hahaha
+haaaaa
+hhhaaaaa
+'''
